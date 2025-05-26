@@ -16,5 +16,35 @@ spring:
       ddl-auto: update
     show-sql: true
 
+  # Kafka Configuration
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      properties:
+        schema.registry.url: http://localhost:8081
+    consumer:
+      group-id: javadvanced-consumer-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      properties:
+        schema.registry.url: http://localhost:8081
+        specific.avro.reader: true
+
 server:
   port: 8082
+
+# Application specific configuration
+app:
+  kafka:
+    topics:
+      product-events: product-events
+      customer-events: customer-events
+
+logging:
+  level:
+    com.epam.javadvanced: DEBUG
+    org.apache.kafka: INFO
+    io.confluent: INFO

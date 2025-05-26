@@ -1,0 +1,42 @@
+{
+  "type": "record",
+  "name": "CustomerEvent",
+  "namespace": "com.epam.javadvanced.avro",
+  "doc": "Customer event schema - Version 1",
+  "fields": [
+    {
+      "name": "id",
+      "type": "long",
+      "doc": "Customer ID"
+    },
+    {
+      "name": "firstName",
+      "type": "string",
+      "doc": "Customer first name"
+    },
+    {
+      "name": "lastName",
+      "type": "string",
+      "doc": "Customer last name"
+    },
+    {
+      "name": "balance",
+      "type": "double",
+      "doc": "Customer balance"
+    },
+    {
+      "name": "eventType",
+      "type": {
+        "type": "enum",
+        "name": "EventType",
+        "symbols": ["CREATED", "UPDATED", "DELETED"]
+      },
+      "doc": "Type of event"
+    },
+    {
+      "name": "timestamp",
+      "type": "long",
+      "doc": "Event timestamp in milliseconds"
+    }
+  ]
+}
