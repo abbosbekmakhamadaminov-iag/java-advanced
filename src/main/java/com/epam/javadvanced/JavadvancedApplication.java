@@ -11,4 +11,9 @@ public class JavadvancedApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(JavadvancedApplication.class, args);
 	}
+
+	@Bean
+	public CommandLineRunner commandLineRunner() {
+		return args -> System.out.println("Hello world");
+	}
 }
