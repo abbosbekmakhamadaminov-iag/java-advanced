@@ -1,5 +1,6 @@
 package com.epam.javadvanced.service;
 
+import com.epam.javadvanced.avro.EventType;
 import com.epam.javadvanced.domain.Customer;
 import com.epam.javadvanced.dto.CustomerDto;
 import com.epam.javadvanced.exceptions.ResourceNotFoundException;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,13 +21,14 @@ public class CustomerService {
 
     private final CustomerRepository customerRepository;
     private final CustomerMapper customerMapper;
+    private final KafkaProducerService kafkaProducerService;
 
     @Transactional(readOnly = true)
     public List<CustomerDto> getAllCustomers() {
         log.info("Retrieving all customers");
         return customerRepository.findAll().stream()
                 .map(customerMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional(readOnly = true)
@@ -44,6 +45,14 @@ public class CustomerService {
         customer.setId(null);
         Customer savedCustomer = customerRepository.save(customer);
         log.info("Created customer with id: {}", savedCustomer.getId());
+
+        kafkaProducerService.sendCustomerEvent(
+                savedCustomer.getId(),
+                savedCustomer.getFirstName(),
+                savedCustomer.getLastName(),
+                savedCustomer.getBalance(),
+                EventType.CREATED
+        );
         return customerMapper.toDto(savedCustomer);
     }
 
@@ -59,17 +68,32 @@ public class CustomerService {
         customer.setId(id);
         Customer updatedCustomer = customerRepository.save(customer);
         log.info("Updated customer with id: {}", id);
+
+        kafkaProducerService.sendCustomerEvent(
+                updatedCustomer.getId(),
+                updatedCustomer.getFirstName(),
+                updatedCustomer.getLastName(),
+                updatedCustomer.getBalance(),
+                EventType.UPDATED
+        );
+
         return customerMapper.toDto(updatedCustomer);
     }
 
     @Transactional
     public void deleteCustomer(Long id) {
-        log.info("Deleting customer with id: {}", id);
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id: " + id));
 
-        if (!customerRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Customer not found with id: " + id);
-        }
         customerRepository.deleteById(id);
         log.info("Deleted customer with id: {}", id);
+
+        kafkaProducerService.sendCustomerEvent(
+                customer.getId(),
+                customer.getFirstName(),
+                customer.getLastName(),
+                customer.getBalance(),
+                EventType.DELETED
+        );
     }
 }

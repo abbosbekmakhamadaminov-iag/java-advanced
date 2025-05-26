@@ -1,0 +1,37 @@
+{
+  "type": "record",
+  "name": "ProductEvent",
+  "namespace": "com.epam.javadvanced.avro",
+  "doc": "Product event schema - Version 1",
+  "fields": [
+    {
+      "name": "id",
+      "type": "long",
+      "doc": "Product ID"
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "doc": "Product name"
+    },
+    {
+      "name": "price",
+      "type": "double",
+      "doc": "Product price"
+    },
+    {
+      "name": "eventType",
+      "type": {
+        "type": "enum",
+        "name": "EventType",
+        "symbols": ["CREATED", "UPDATED", "DELETED"]
+      },
+      "doc": "Type of event"
+    },
+    {
+      "name": "timestamp",
+      "type": "long",
+      "doc": "Event timestamp in milliseconds"
+    }
+  ]
+}

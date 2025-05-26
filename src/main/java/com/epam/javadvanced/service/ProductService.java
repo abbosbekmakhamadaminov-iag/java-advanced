@@ -1,5 +1,6 @@
 package com.epam.javadvanced.service;
 
+import com.epam.javadvanced.avro.EventType;
 import com.epam.javadvanced.domain.Product;
 import com.epam.javadvanced.dto.ProductDto;
 import com.epam.javadvanced.exceptions.ResourceNotFoundException;
@@ -18,6 +19,7 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
+    private final KafkaProducerService kafkaProducerService;
 
     @Transactional(readOnly = true)
     public List<ProductDto> getAllProducts() {
@@ -38,6 +40,13 @@ public class ProductService {
         Product product = productMapper.toEntity(productDto);
         product.setId(null);
         Product savedProduct = productRepository.save(product);
+
+        kafkaProducerService.sendProductEvent(
+                savedProduct.getId(),
+                savedProduct.getName(),
+                savedProduct.getPrice(),
+                EventType.CREATED
+        );
         return productMapper.toDto(savedProduct);
     }
 
@@ -50,14 +59,28 @@ public class ProductService {
         Product product = productMapper.toEntity(productDto);
         product.setId(id);
         Product updatedProduct = productRepository.save(product);
+
+        kafkaProducerService.sendProductEvent(
+                updatedProduct.getId(),
+                updatedProduct.getName(),
+                updatedProduct.getPrice(),
+                EventType.UPDATED
+        );
         return productMapper.toDto(updatedProduct);
     }
 
     @Transactional
     public void deleteProduct(Long id) {
-        if (!productRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Product not found with id: " + id);
-        }
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
+
         productRepository.deleteById(id);
+
+        kafkaProducerService.sendProductEvent(
+                product.getId(),
+                product.getName(),
+                product.getPrice(),
+                EventType.DELETED
+        );
     }
 }
