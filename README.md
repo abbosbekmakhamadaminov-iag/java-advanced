@@ -13,6 +13,7 @@ Based on learning modules and tasks:
 
 - **crud-service**: Traditional Spring Boot CRUD API with JPA (Module 1 - Task 2)
 - **etl-service**: Reactive Spring Boot ETL service with WebFlux (Task 3)
+- **security-module**: Spring Security homework with 4 progressive tasks (Spring Boot 2.7.18)
 - **shared-models**: Common entities shared across services
 
 ## Prerequisites
@@ -42,6 +43,23 @@ Based on learning modules and tasks:
 - **Port**: 8080
 - **API**: http://localhost:8080/api/v1/sport
 - **Features**: Reactive ETL, Rakuten API integration, backpressure control
+
+### Run Security Module (Homework Tasks)
+```bash
+# Task 1 - Basic Security Setup
+./gradlew :security-module:bootRun --args="--spring.profiles.active=task1"
+
+# Task 2 - Database & Password Security  
+./gradlew :security-module:bootRun --args="--spring.profiles.active=task2"
+
+# Task 3 - Advanced Security
+./gradlew :security-module:bootRun --args="--spring.profiles.active=task3"
+
+# Task 4 - Secret Sharing App
+./gradlew :security-module:bootRun --args="--spring.profiles.active=task4"
+```
+- **Port**: 8084
+- **Features**: Progressive security tasks with Spring Boot 2.7.18
 
 ## API Examples
 
