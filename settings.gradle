@@ -1,1 +1,5 @@
 rootProject.name = 'javadvanced'
+
+include 'crud-service'
+include 'etl-service'
+include 'shared-models'
