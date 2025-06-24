@@ -1,0 +1,19 @@
+# Task 1: Basic Security Setup (20 points)
+# Steps 1-3: Spring Boot MVC + REST endpoint + Spring Security
+
+spring:
+  security:
+    user:
+      name: user@example.com
+      password: password
+      roles: USER
+
+info:
+  task:
+    number: 1
+    description: "Basic Security Setup"
+    points: 20
+    features:
+      - "Spring Boot MVC project"
+      - "REST endpoint GET /info"
+      - "Spring Security with email/password authentication"

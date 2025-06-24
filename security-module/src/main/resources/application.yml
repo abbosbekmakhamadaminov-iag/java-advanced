@@ -1,0 +1,25 @@
+# Default configuration - shows available tasks
+server:
+  port: 8084
+
+spring:
+  profiles:
+    active: task1
+  application:
+    name: security-homework
+
+logging:
+  level:
+    com.epam.javadvanced.security: DEBUG
+    org.springframework.security: DEBUG
+
+---
+# Task information endpoint
+management:
+  endpoints:
+    web:
+      exposure:
+        include: info
+  info:
+    build:
+      enabled: true

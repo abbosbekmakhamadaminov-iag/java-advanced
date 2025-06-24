@@ -1,0 +1,38 @@
+# Task 4: Secret Sharing Application (20 points)
+# Steps 12-14: One-time secret sharing + STANDARD permission + Docker
+
+spring:
+    
+  datasource:
+    url: jdbc:h2:mem:secretsdb
+    username: sa
+    password: sa
+    driver-class-name: org.h2.Driver
+    
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+# Secret sharing settings
+secrets:
+  base-url: http://localhost:8084
+  cleanup:
+    enabled: true
+    interval-minutes: 60
+
+info:
+  task:
+    number: 4
+    description: "Secret Sharing Application"
+    points: 20
+    features:
+      - "One-time secret sharing"
+      - "Unique link generation"
+      - "STANDARD permission required"
+      - "Docker containerization"
